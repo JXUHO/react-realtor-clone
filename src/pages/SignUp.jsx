@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { db } from "../firebase";
+import { serverTimestamp } from "firebase/firestore";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: ""
+    name: "",
   });
 
   const { name, email, password } = formData;
@@ -20,6 +27,29 @@ const SignUp = () => {
       [e.target.id]: e.target.value,
     }));
     // console.log(email)
+  };
+
+  const submitHandler = (e) => {
+    // trigger 안됨
+    e.preventDefault();
+
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        updateProfile(user, {
+          displayName: name,
+        });
+        const formDataCopy = {...formData}
+        delete formDataCopy.password;
+        formDataCopy.timestamp = serverTimestamp();
+        // TODO: 비밀번호를 제거한 fromdatacopy생성, 이를 database에 저장해야함 54분
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+
   };
 
   return (
@@ -35,8 +65,8 @@ const SignUp = () => {
             />
           </div>
           <div className="w-full md:w-8/12 lg:w-5/12 lg:ml-20">
-            <form className="mb-6">
-            <div className="mb-6 w-full">
+            <form onSubmit={submitHandler} className="mb-6">
+              <div className="mb-6 w-full">
                 <input
                   type="text"
                   id="name"
@@ -103,8 +133,7 @@ const SignUp = () => {
               <div className="flex items-center my-4 before:flex-1 before:border-t before:border-gray-300  before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5">
                 <p className="text-center font-semibold mx-4 mb-0">or</p>
               </div>
-              <OAuth/>
-             
+              <OAuth />
             </form>
           </div>
         </div>
