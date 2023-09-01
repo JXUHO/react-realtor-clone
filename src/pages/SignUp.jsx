@@ -1,17 +1,21 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-
-import { Link } from "react-router-dom";
-import OAuth from "../components/OAuth";
 import { db } from "../firebase";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, doc, setDoc } from "firebase/firestore";
+
+
+import OAuth from "../components/OAuth";
+import { toast } from "react-toastify";
+
 
 const SignUp = () => {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -29,28 +33,41 @@ const SignUp = () => {
     // console.log(email)
   };
 
-  const submitHandler = (e) => {
-    // trigger 안됨
-    e.preventDefault();
-
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        updateProfile(user, {
-          displayName: name,
-        });
-        const formDataCopy = {...formData}
-        delete formDataCopy.password;
-        formDataCopy.timestamp = serverTimestamp();
-        // TODO: 비밀번호를 제거한 fromdatacopy생성, 이를 database에 저장해야함 54분
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+  const submitHandler = async (e) => {
+    try {
+      e.preventDefault();
+  
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      await updateProfile(user, {
+        displayName: name,
       });
+      
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+      
+      await setDoc(doc(db, "users", user.uid), formDataCopy)
+      
+      navigate("/")
 
+    } catch (error) {
+      console.log(error)
+      toast.error('Error: failed to register', {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+    }
   };
+  
 
   return (
     <>
