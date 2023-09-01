@@ -1,15 +1,34 @@
 import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import { toast } from "react-toastify";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const onChange = (e) => {
     setEmail(e.target.value);
   };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Email was sent")
+      navigate("/sign-in")
+    } catch (error) {
+      toast.error("can't send reset password")
+      console.log(error)
+    }
+
+  }
+
 
   return (
     <>
@@ -24,8 +43,7 @@ const SignUp = () => {
             />
           </div>
           <div className="w-full md:w-8/12 lg:w-5/12 lg:ml-20">
-            <form className="mb-6">
-
+            <form onSubmit={submitHandler} className="mb-6">
               <div className="mb-6 w-full">
                 <input
                   type="email"
