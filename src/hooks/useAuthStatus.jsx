@@ -2,21 +2,20 @@ import { useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const useAuthStatus = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if(user) {
-        setIsLoggedIn(true)
+    onAuthStateChanged(auth, (user) => {  // user가 login상태인지 확인
+      if (user) {
+        setIsLoggedIn(true);
+      }
+      setIsLoading(false);
+    });
+  }, []);
 
-      } 
-      setIsLoading(false)
-    })
-  }, [])
-
-  return {isLoggedIn, isLoading}
-}
+  return { isLoggedIn, isLoading };
+};
 
 export default useAuthStatus;
