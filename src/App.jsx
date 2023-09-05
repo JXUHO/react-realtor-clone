@@ -9,6 +9,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Offers from "./pages/Offers";
 import RootLayout from "./pages/Root";
 import PrivateRoute from "./components/PrivateRoute";
+import CreateListing from "./pages/CreateListing";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         path: "/offers",
         element: <Offers />,
       },
+      {
+        path: "/create-listing",
+        element: <CreateListing />
+      }
     ],
   },
 ]);

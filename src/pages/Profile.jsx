@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { getAuth, updateProfile } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import { FcHome } from "react-icons/fc";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -28,16 +29,16 @@ const Profile = () => {
     try {
       if (auth.currentUser.displayName !== name) {
         await updateProfile(auth.currentUser, {
-          displayName: name
-        })
-        const docRef = doc(db, "users", auth.currentUser.uid)
+          displayName: name,
+        });
+        const docRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(docRef, {
           name: name,
-        })
+        });
       }
-      toast.success("change success")
+      toast.success("change success");
     } catch (error) {
-      toast.error("failed to change name")
+      toast.error("failed to change name");
     }
   };
 
@@ -88,6 +89,12 @@ const Profile = () => {
                 Sign out
               </p>
             </div>
+            <button type="submit" className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
+              <Link to={"/create-listing"} className="flex justify-center items-center">
+                <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2"/>
+                Sell or rent your home
+              </Link>
+            </button>
           </form>
         </div>
       </section>
