@@ -10,6 +10,7 @@ const useAuthStatus = () => {
     onAuthStateChanged(auth, (user) => {  // user가 login상태인지 확인
       if (user) {
         setIsLoggedIn(true);
+        console.log("loading")
       }
       setIsLoading(false);
     });
