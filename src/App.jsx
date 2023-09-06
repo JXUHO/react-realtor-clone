@@ -22,11 +22,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <PrivateRoute/>,
+        element: <PrivateRoute />,
         children: [
           {
             index: true,
-            element: <Profile/>
+            element: <Profile />,
           },
         ],
       },
@@ -48,8 +48,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/create-listing",
-        element: <CreateListing />
-      }
+        element: <PrivateRoute />,
+        children: [
+          {
+            index: true,
+            element: <CreateListing />,
+          },
+        ],
+      },
+      // TODO: CreateListing submit 이후 rent/sale dynamic route추가
     ],
   },
 ]);
