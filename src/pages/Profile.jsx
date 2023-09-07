@@ -1,15 +1,30 @@
-import { useState } from "react";
-import { getAuth, updateProfile } from "firebase/auth";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { doc, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
+
 import { db } from "../firebase";
+import { getAuth, updateProfile } from "firebase/auth";
+import {
+  doc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  where,
+} from "firebase/firestore";
+
+import { Link, useNavigate } from "react-router-dom";
+
+import ListingItem from "../components/ListingItem";
+
+import { toast } from "react-toastify";
 import { FcHome } from "react-icons/fc";
 
 const Profile = () => {
   const navigate = useNavigate();
   const auth = getAuth();
   const [changeDetail, setChangeDetail] = useState(false);
+  const [listings, setListings] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
@@ -41,6 +56,34 @@ const Profile = () => {
       toast.error("failed to change name");
     }
   };
+
+  useEffect(() => {
+    const fetchUserListings = async () => {
+      setIsLoading(true);
+      const listingRef = collection(db, "listings");
+      const q = query(
+        listingRef,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+
+      let listings = [];
+      querySnapshot.forEach((doc) => {
+        return listings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+
+      console.log(listings)
+
+      setListings(listings);
+      setIsLoading(false);
+    };
+
+    fetchUserListings();
+  }, [auth.currentUser.uid]);
 
   return (
     <>
@@ -89,15 +132,39 @@ const Profile = () => {
                 Sign out
               </p>
             </div>
-            <button type="submit" className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full">
-              <Link to={"/create-listing"} className="flex justify-center items-center">
-                <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2"/>
+            <button
+              type="submit"
+              className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+            >
+              <Link
+                to={"/create-listing"}
+                className="flex justify-center items-center"
+              >
+                <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2" />
                 Sell or rent your home
               </Link>
             </button>
           </form>
         </div>
       </section>
+      <div className="max-w-6xl px-3 mt-6 mx-auto">
+        {!isLoading && listings && listings.length > 0 && (
+          <>
+            <h2 className="text-2xl text-center w-full mt-6 font-semibold">
+              My Listing
+            </h2>
+            <ul>
+              {listings.map((listing) => (
+                <ListingItem
+                  key={listing.id}
+                  id={listing.id}
+                  listing={listing.data}
+                />
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </>
   );
 };
