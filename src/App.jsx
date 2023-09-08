@@ -10,6 +10,7 @@ import Offers from "./pages/Offers";
 import RootLayout from "./pages/Root";
 import PrivateRoute from "./components/PrivateRoute";
 import CreateListing from "./pages/CreateListing";
+import EditListing from "./pages/EditListing";
 
 const router = createBrowserRouter([
   {
@@ -78,7 +79,13 @@ const router = createBrowserRouter([
       },
       {
         path: "/edit-listing/:id",
-        
+        element: <PrivateRoute/>,
+        children: [
+          {
+            index: true,
+            element: <EditListing/>
+          }
+        ]
       }
     ],
   },
