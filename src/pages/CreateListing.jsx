@@ -93,8 +93,6 @@ const CreateListing = () => {
       geolocation.lat = formData.latitude;
       geolocation.lng = formData.longitude;
     }
-
-    console.log(uuidv4())
     
     const storeImage = async (image) => {
       return new Promise((resolve, reject) => {
@@ -135,23 +133,6 @@ const CreateListing = () => {
     };
 
 
-
-    ////////////////실험코드... formData.images promise 아님!
-
-    // if (formData.images instanceof Promise) {
-    //   console.log("myObject is a Promise");
-    // } else {
-    //   console.log("myObject is not a Promise");
-    // }
-
-    // const imgUrls = [...formData.images].map((image) => {
-    //   return storeImage(image)}
-    // )
-    /////////////////
-
-
-
-    //original code 
     const imgUrls = await Promise.all(
       [...formData.images].map((image) => {
       return storeImage(image)}
@@ -178,7 +159,7 @@ const CreateListing = () => {
     const docRef = await addDoc(collection(db, "listings"), formDataCopy);
     setLoading(false);
     toast.success("Listing created");
-    // navigate(`/category/${formDataCopy.type}/${docRef.id}`);  // dynamic routing 추가 후 activate
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);  // dynamic routing 추가 후 activate
   };
 
   if (loading) {

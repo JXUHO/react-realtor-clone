@@ -57,6 +57,25 @@ const router = createBrowserRouter([
         ],
       },
       // TODO: CreateListing submit 이후 rent/sale dynamic route추가
+      {
+        path: "/category",
+        // element: , 
+        children: [
+          {
+            path: "sale",
+            // element: 
+          },
+          {
+            path: "sale/:id"
+          },
+          {
+            path: "rent",
+          },
+          {
+            path: "rent/:id"
+          },
+        ]
+      }
     ],
   },
 ]);

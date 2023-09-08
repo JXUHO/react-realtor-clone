@@ -12,7 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import ListingItem from "../components/ListingItem";
 
@@ -58,7 +58,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const fetchUserListings = async () => {
+    const fetchUserListings = async () => {  // 데이터 가지고오기
       setIsLoading(true);
       const listingRef = collection(db, "listings");
       const q = query(
@@ -67,18 +67,18 @@ const Profile = () => {
         orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
-
+      
       let listings = [];
-      querySnapshot.forEach((doc) => {
+      querySnapshot.forEach((doc) => {  // array.forEach아님. querySnapshot의 method.
         return listings.push({
           id: doc.id,
           data: doc.data(),
         });
       });
 
-      console.log(listings)
+      // console.log(listings)
 
-      setListings(listings);
+      setListings(listings);  // 데이터 state로 업데이트
       setIsLoading(false);
     };
 
@@ -133,16 +133,16 @@ const Profile = () => {
               </p>
             </div>
             <button
+              onClick={() => {
+                navigate("/create-listing");
+              }}
               type="submit"
               className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full"
             >
-              <Link
-                to={"/create-listing"}
-                className="flex justify-center items-center"
-              >
+              <div className="flex justify-center items-center">
                 <FcHome className="mr-2 text-3xl bg-red-200 rounded-full p-1 border-2" />
                 Sell or rent your home
-              </Link>
+              </div>
             </button>
           </form>
         </div>
@@ -150,10 +150,10 @@ const Profile = () => {
       <div className="max-w-6xl px-3 mt-6 mx-auto">
         {!isLoading && listings && listings.length > 0 && (
           <>
-            <h2 className="text-2xl text-center w-full mt-6 font-semibold">
+            <h2 className="text-2xl text-center font-semibold mb-6">
               My Listing
             </h2>
-            <ul>
+            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {listings.map((listing) => (
                 <ListingItem
                   key={listing.id}
