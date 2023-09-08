@@ -10,6 +10,7 @@ import {
   query,
   orderBy,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 
 import { useNavigate } from "react-router-dom";
@@ -58,7 +59,8 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const fetchUserListings = async () => {  // 데이터 가지고오기
+    const fetchUserListings = async () => {
+      // 데이터 가지고오기
       setIsLoading(true);
       const listingRef = collection(db, "listings");
       const q = query(
@@ -67,9 +69,10 @@ const Profile = () => {
         orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
-      
+
       let listings = [];
-      querySnapshot.forEach((doc) => {  // array.forEach아님. querySnapshot의 method.
+      querySnapshot.forEach((doc) => {
+        // array.forEach아님. querySnapshot의 method.
         return listings.push({
           id: doc.id,
           data: doc.data(),
@@ -78,12 +81,25 @@ const Profile = () => {
 
       // console.log(listings)
 
-      setListings(listings);  // 데이터 state로 업데이트
+      setListings(listings); // 데이터 state로 업데이트
       setIsLoading(false);
     };
 
     fetchUserListings();
   }, [auth.currentUser.uid]);
+
+  const onDelete = async (id) => {
+    if (window.confirm("Do you want to delete?")) {
+      await deleteDoc(doc(db, "listings", id));
+      const updatedListings = listings.filter((listing) => listing.id !== id);
+      setListings(updatedListings)
+      toast.success("delete succeed")
+    }
+  };
+
+  const onEdit = (id) => {
+    navigate(`/edit-listing/${id}`);
+  };
 
   return (
     <>
@@ -159,6 +175,8 @@ const Profile = () => {
                   key={listing.id}
                   id={listing.id}
                   listing={listing.data}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => onEdit(listing.id)}
                 />
               ))}
             </ul>

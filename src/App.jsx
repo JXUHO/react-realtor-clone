@@ -75,6 +75,10 @@ const router = createBrowserRouter([
             path: "rent/:id"
           },
         ]
+      },
+      {
+        path: "/edit-listing/:id",
+        
       }
     ],
   },
