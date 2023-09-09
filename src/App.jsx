@@ -11,6 +11,7 @@ import RootLayout from "./pages/Root";
 import PrivateRoute from "./components/PrivateRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
+import Listing from "./pages/Listing";
 
 const router = createBrowserRouter([
   {
@@ -59,23 +60,23 @@ const router = createBrowserRouter([
       },
       // TODO: CreateListing submit 이후 rent/sale dynamic route추가
       {
-        path: "/category",
-        // element: , 
-        children: [
-          {
-            path: "sale",
-            // element: 
-          },
-          {
-            path: "sale/:id"
-          },
-          {
-            path: "rent",
-          },
-          {
-            path: "rent/:id"
-          },
-        ]
+        path: "/category/:categoryName/:listingId",
+        element: <Listing />, 
+        // children: [
+        //   {
+        //     path: "sale",
+        //     // element: 
+        //   },
+        //   {
+        //     path: "sale/:id"
+        //   },
+        //   {
+        //     path: "rent",
+        //   },
+        //   {
+        //     path: "rent/:id"
+        //   },
+        // ]
       },
       {
         path: "/edit-listing/:id",
