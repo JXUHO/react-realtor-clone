@@ -6,14 +6,25 @@ import Spinner from "../components/Spinner";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { EffectFade, Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css/bundle";
-import { FaShare, FaMapMarkerAlt, FaBed, FaBath, FaParking, FaChair} from "react-icons/fa";
+import {
+  FaShare,
+  FaMapMarkerAlt,
+  FaBed,
+  FaBath,
+  FaParking,
+  FaChair,
+} from "react-icons/fa";
+import { getAuth } from "firebase/auth";
+import Contact from "../components/Contact";
 
 const Listing = () => {
+  const auth = getAuth();
   const params = useParams();
   const location = useLocation();
   const [listing, setListing] = useState();
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
+  const [contactLandlord, setContactLandlord] = useState(false)
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -21,6 +32,7 @@ const Listing = () => {
       const docRef = doc(db, "listings", params.listingId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
+        // console.log(docSnap.data())
         setListing(docSnap.data());
         setLoading(false);
       }
@@ -35,7 +47,6 @@ const Listing = () => {
 
   return (
     <main>
-      {listing.name}
       <Swiper
         effect={"fade"}
         pagination={{
@@ -79,7 +90,7 @@ const Listing = () => {
       )}
 
       <div className="max-w-6xl m-4 lg:mx-auto p-4 flex flex-col md:flex-row md:space-x-5 bg-white shadow-lg rounded-lg">
-        <div className="w-full h-[200px] lg-h-[400px]">
+        <div className="w-full ">
           <p className="text-2xl font-bold mb-3 text-blue-900">
             {listing.name} - ${" "}
             {listing.offer
@@ -99,20 +110,20 @@ const Listing = () => {
             <p className=" bg-red-800 w-full max-w-[200px] rounded-md p-1 text-white text-center font-semibold shadow-md">
               For {listing.type === "rent" ? "Rent" : "Sale"}
             </p>
-            <p className="w-full max-w-[200px] bg-green-800 rounded-md p-1 text-white text-center font-semibold shadow-md">
+            <div className="w-full max-w-[200px] bg-green-800 rounded-md p-1 text-white text-center font-semibold shadow-md">
               {listing.offer && (
                 <p>
                   ${listing.regularPrice - listing.discountedPrice} discount
                 </p>
               )}
-            </p>
+            </div>
           </div>
           <p className="mt-3 mb-3">
             <span className="font-semibold">Description - </span>
             {listing.description}
           </p>
-          <ul className="flex items-center space-x-2 sm:space-x-10 text-sm font-semibold">
-          <li className="flex items-center whitespace-nowrap">
+          <ul className="flex items-center space-x-2 sm:space-x-10 text-sm font-semibold mb-6">
+            <li className="flex items-center whitespace-nowrap">
               <FaBed className="text-lg mr-1" />
               {+listing.bedrooms > 1 ? `${listing.bedrooms} Beds` : "1 Bed"}
             </li>
@@ -129,8 +140,22 @@ const Listing = () => {
               {listing.furnished ? "Furnished" : "Not furnished"}
             </li>
           </ul>
+          {listing.userRef !== auth.currentUser?.uid && !contactLandlord && (
+            <div className="mt-6">
+              <button
+                onClick={() => setContactLandlord(true)}
+                className="inline-block px-7 py-3 bg-blue-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full text-center"
+              >
+                Contact Landlord
+              </button>
+              
+            </div>
+          )}
+          {contactLandlord && <Contact userRef={listing.userRef} listing={listing}/>}
         </div>
-        <div className="bg-blue-300 w-full h-[200px] lg-h-[400px] z-10 overflow-x-hidden"></div>
+        <div className="bg-blue-300 w-full h-[200px] lg-h-[400px] z-10 overflow-x-hidden">
+          map
+        </div>
       </div>
     </main>
   );

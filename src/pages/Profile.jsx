@@ -69,7 +69,9 @@ const Profile = () => {
         orderBy("timestamp", "desc")
       );
       const querySnapshot = await getDocs(q);
+      
 
+      // listings는 해당 id의 사용자가 작성한 documents의 배열
       let listings = [];
       querySnapshot.forEach((doc) => {
         // array.forEach아님. querySnapshot의 method.
