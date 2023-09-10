@@ -16,3 +16,7 @@ body {
   background: #c8f0cb;
 }
 
+
+html::-webkit-scrollbar{
+  display: none;
+}

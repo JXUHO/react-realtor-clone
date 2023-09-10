@@ -62,22 +62,21 @@ const router = createBrowserRouter([
       {
         path: "/category/:categoryName/:listingId",
         element: <Listing />, 
-        // children: [
-        //   {
-        //     path: "sale",
-        //     // element: 
-        //   },
-        //   {
-        //     path: "sale/:id"
-        //   },
-        //   {
-        //     path: "rent",
-        //   },
-        //   {
-        //     path: "rent/:id"
-        //   },
-        // ]
       },
+      // {
+      //   path: "/category",
+      //   element: <Listing />, 
+      //   children: [
+      //     {
+      //       path: ":categoryName",
+      //       element: <
+      //     }
+      //   ]
+      // },
+
+
+
+
       {
         path: "/edit-listing/:id",
         element: <PrivateRoute/>,

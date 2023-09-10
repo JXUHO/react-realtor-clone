@@ -24,7 +24,7 @@ const Slider = () => {
       });
       setLoading(false);
       setListings(listings);
-      console.log(listings);
+      // console.log(listings);
     };
     fetchListings();
   }, []);
@@ -34,7 +34,7 @@ const Slider = () => {
   }
 
   if (listings.length === 0) {
-    console.log("listings empty");
+    // console.log("listings empty");
     return <></>;
   }
 
