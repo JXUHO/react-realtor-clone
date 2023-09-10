@@ -16,6 +16,10 @@ import {
 } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import Contact from "../components/Contact";
+import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css"
+import markerIconPng from "leaflet/dist/images/marker-icon.png"
+import {Icon} from 'leaflet'
 
 const Listing = () => {
   const auth = getAuth();
@@ -24,7 +28,7 @@ const Listing = () => {
   const [listing, setListing] = useState();
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
-  const [contactLandlord, setContactLandlord] = useState(false)
+  const [contactLandlord, setContactLandlord] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -32,7 +36,7 @@ const Listing = () => {
       const docRef = doc(db, "listings", params.listingId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        // console.log(docSnap.data())
+        console.log(docSnap.data())
         setListing(docSnap.data());
         setLoading(false);
       }
@@ -148,13 +152,31 @@ const Listing = () => {
               >
                 Contact Landlord
               </button>
-              
             </div>
           )}
-          {contactLandlord && <Contact userRef={listing.userRef} listing={listing}/>}
+          {contactLandlord && (
+            <Contact userRef={listing.userRef} listing={listing} />
+          )}
         </div>
-        <div className="bg-blue-300 w-full h-[200px] lg-h-[400px] z-10 overflow-x-hidden">
-          map
+        <div className="w-full h-[200px] md:h-[400px] z-10 overflow-x-hidden mt-6 md:mt-0 md:ml-2">
+          <MapContainer
+            center={[listing.geolocation.lat, listing.geolocation.lng]}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker
+              position={[listing.geolocation.lat, listing.geolocation.lng]}
+            >
+              <Popup>
+                {listing.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
         </div>
       </div>
     </main>
