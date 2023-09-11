@@ -14,12 +14,11 @@ import Spinner from "../components/Spinner";
 import ListingItem from "../components/ListingItem";
 import { useParams } from "react-router-dom";
 
-
 const Category = () => {
   const [listings, setListings] = useState();
   const [loading, setLoading] = useState(false);
   const [lastFetchedListing, setLastFetchedListing] = useState(null);
-  const params = useParams()
+  const params = useParams();
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -78,21 +77,22 @@ const Category = () => {
           data: doc.data(),
         });
       });
-      setListings(prevState => [...prevState, ...listings]);
+      setListings((prevState) => [...prevState, ...listings]);
       setLoading(false);
       // console.log("fetched")
     } catch (error) {
       console.log(error);
       toast.error("can't fetch listings");
     }
-  }
-
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-3">
       {loading && <Spinner />}
-      <h1 className="text-3xl text-center mt-6 font-bold mb-6">Places for {params.categoryName}</h1>
-      {listings && listings.length === 0 && <p>There are no current offers</p>}
+      <h1 className="text-3xl text-center mt-6 font-bold mb-6">
+        Places for {params.categoryName}
+      </h1>
+      {listings && listings.length === 0 && <p>There are no current {params.categoryName}</p>}
       {listings && listings.length !== 0 && (
         <>
           <main>
@@ -108,7 +108,10 @@ const Category = () => {
           </main>
           {lastFetchedListing && (
             <div className="flex justify-center items-center">
-              <button onClick={loadMoreHandler} className="bg-white px-3 py-1.5 text-gray-700 border border-gray-300 mb-6 mt-6 hover:border-slate-600 rounded transition duration-150 ease-in-out">
+              <button
+                onClick={loadMoreHandler}
+                className="bg-white px-3 py-1.5 text-gray-700 border border-gray-300 mb-6 mt-6 hover:border-slate-600 rounded transition duration-150 ease-in-out"
+              >
                 Load more
               </button>
             </div>

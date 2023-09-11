@@ -1,10 +1,6 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  createBrowserRouter,
-  redirect,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -18,7 +14,6 @@ import EditListing from "./pages/EditListing";
 import Listing from "./pages/Listing";
 import CategoryRoute from "./components/CategoryRoute";
 import Category from "./pages/Category";
-import Test from "./pages/Test";
 
 const router = createBrowserRouter([
   {
