@@ -1,6 +1,10 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
@@ -12,6 +16,9 @@ import PrivateRoute from "./components/PrivateRoute";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
 import Listing from "./pages/Listing";
+import CategoryRoute from "./components/CategoryRoute";
+import Category from "./pages/Category";
+import Test from "./pages/Test";
 
 const router = createBrowserRouter([
   {
@@ -58,35 +65,29 @@ const router = createBrowserRouter([
           },
         ],
       },
-      // TODO: CreateListing submit 이후 rent/sale dynamic route추가
+
+      {
+        path: "/category",
+        element: <CategoryRoute />,
+      },
+      {
+        path: "/category/:categoryName",
+        element: <Category />,
+      },
       {
         path: "/category/:categoryName/:listingId",
-        element: <Listing />, 
+        element: <Listing />,
       },
-      // {
-      //   path: "/category",
-      //   element: <Listing />, 
-      //   children: [
-      //     {
-      //       path: ":categoryName",
-      //       element: <
-      //     }
-      //   ]
-      // },
-
-
-
-
       {
         path: "/edit-listing/:id",
-        element: <PrivateRoute/>,
+        element: <PrivateRoute />,
         children: [
           {
             index: true,
-            element: <EditListing/>
-          }
-        ]
-      }
+            element: <EditListing />,
+          },
+        ],
+      },
     ],
   },
 ]);

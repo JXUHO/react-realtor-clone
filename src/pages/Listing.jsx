@@ -18,8 +18,6 @@ import { getAuth } from "firebase/auth";
 import Contact from "../components/Contact";
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css"
-import markerIconPng from "leaflet/dist/images/marker-icon.png"
-import {Icon} from 'leaflet'
 
 const Listing = () => {
   const auth = getAuth();
@@ -33,7 +31,7 @@ const Listing = () => {
   useEffect(() => {
     const fetchListing = async () => {
       setLoading(true);
-      const docRef = doc(db, "listings", params.listingId);
+      const docRef = doc(db, "listings", params.listingId);  // url가지고와서 데이터 가지고옴
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         console.log(docSnap.data())
